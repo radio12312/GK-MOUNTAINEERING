@@ -39,6 +39,7 @@ export function revealLines(el: HTMLElement, opts: RevealOptions = {}): void {
   let played = false;
   SplitText.create(el, {
     type: 'lines',
+    aria: 'none', // lines keep their real text; 'auto' would put aria-label on <p>/<h2> (not allowed)
     linesClass: 'line',
     autoSplit: true,
     onSplit(self) {

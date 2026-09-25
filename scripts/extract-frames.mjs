@@ -5,6 +5,7 @@
  *   npm run frames                 # everything
  *   npm run frames -- 02-icefall   # only the named clip(s) (+ manifest refresh)
  *   npm run frames -- --no-hero    # skip hero video encoding
+ *   npm run frames -- --lqip-only  # only regenerate the LQIP placeholders in the manifest
  *
  * Requires ffmpeg + ffprobe on PATH.
  */
@@ -32,7 +33,7 @@ const CONFIG = {
   ],
   desktop: { width: 1600, quality: 72 },
   mobile: { width: 720, quality: 68 }, // 9:16 centre crop
-  lqip: { width: 32, blur: 1.2, quality: 40 },
+  lqip: { width: 32, quality: 50 }, // blurred at draw time (canvas filter), not here
   stills: { count: 6, width: 1920, quality: 82 },
   warnDesktopMB: 12,
   hero: {
@@ -49,6 +50,7 @@ const CONFIG = {
 const args = process.argv.slice(2);
 const onlyClips = args.filter((a) => !a.startsWith('--'));
 const skipHero = args.includes('--no-hero');
+const lqipOnly = args.includes('--lqip-only');
 
 function which(bin) {
   const r = spawnSync(bin, ['-version'], { encoding: 'utf8' });
@@ -96,6 +98,16 @@ const dirBytes = (p) =>
 const mb = (b) => (b / 1024 / 1024).toFixed(2) + ' MB';
 const webp = (q) => ['-c:v', 'libwebp', '-quality', String(q), '-compression_level', '5', '-preset', 'photo'];
 
+// LQIP: tiny WebP, inlined as base64. No ffmpeg blur: gblur corrupts chroma on images this
+// small (green bands); the site blurs the placeholder when drawing it.
+function makeLqip(srcFrame, name) {
+  const tmp = path.join(os.tmpdir(), `lqip-${name}-${process.pid}.webp`);
+  run('ffmpeg', ['-y', '-i', srcFrame, '-vf', `scale=${CONFIG.lqip.width}:-2:flags=area`, ...webp(CONFIG.lqip.quality), tmp]);
+  const uri = `data:image/webp;base64,${fs.readFileSync(tmp).toString('base64')}`;
+  fs.rmSync(tmp, { force: true });
+  return uri;
+}
+
 // ---------------------------------------------------------------------------
 // Clips
 // ---------------------------------------------------------------------------
@@ -111,6 +123,14 @@ for (const clip of CONFIG.clips) {
   }
   probes[clip.name] = probe(src);
   if (onlyClips.length && !onlyClips.includes(clip.name)) continue;
+  if (lqipOnly) {
+    const first = path.join(PUBLIC, 'frames', clip.name, 'desktop', '0001.webp');
+    if (manifest[clip.name] && fs.existsSync(first)) {
+      manifest[clip.name].lqip = makeLqip(first, clip.name);
+      console.log(`▸ ${clip.name}  LQIP updated`);
+    }
+    continue;
+  }
 
   const { duration } = probes[clip.name];
   const len = Math.max(0.1, duration - CONFIG.trimStart - CONFIG.trimEnd);
@@ -147,16 +167,7 @@ for (const clip of CONFIG.clips) {
   fs.copyFileSync(path.join(dDir, frames[0]), path.join(out, 'poster.webp'));
   fs.copyFileSync(path.join(dDir, frames[count - 1]), path.join(out, 'end.webp'));
 
-  // LQIP: tiny blurred WebP, inlined as base64.
-  const tmp = path.join(os.tmpdir(), `lqip-${clip.name}-${process.pid}.webp`);
-  run('ffmpeg', [
-    '-y', '-i', path.join(dDir, frames[0]),
-    '-vf', `scale=${CONFIG.lqip.width}:-2,gblur=sigma=${CONFIG.lqip.blur}`,
-    ...webp(CONFIG.lqip.quality),
-    tmp,
-  ]);
-  const lqip = `data:image/webp;base64,${fs.readFileSync(tmp).toString('base64')}`;
-  fs.rmSync(tmp, { force: true });
+  const lqip = makeLqip(path.join(dDir, frames[0]), clip.name);
 
   const dProbe = probe(path.join(dDir, frames[0]));
   const mProbe = probe(path.join(mDir, frames[0]));
@@ -186,7 +197,7 @@ console.log(`✔ ${path.relative(ROOT, manifestPath)}`);
 // ---------------------------------------------------------------------------
 // Stills: evenly spaced across the combined (trimmed) timeline of all clips.
 // ---------------------------------------------------------------------------
-if (!onlyClips.length) {
+if (!onlyClips.length && !lqipOnly) {
   const stillsDir = path.join(PUBLIC, 'stills');
   rmrf(stillsDir);
   mkdirp(stillsDir);
@@ -224,7 +235,7 @@ if (!onlyClips.length) {
 // ---------------------------------------------------------------------------
 // Hero video: muted, seamless loop (crossfade baked in), MP4 + WebM under maxBytes.
 // ---------------------------------------------------------------------------
-if (!skipHero && !onlyClips.length) {
+if (!skipHero && !onlyClips.length && !lqipOnly) {
   const videoDir = path.join(PUBLIC, 'video');
   mkdirp(videoDir);
   const H = CONFIG.hero;

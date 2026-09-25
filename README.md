@@ -44,6 +44,7 @@ npm run preview    # serve dist/
    npm run frames                  # everything: sequences, posters, LQIPs, stills, hero video, manifest
    npm run frames -- 02-icefall    # one clip only (manifest is updated in place)
    npm run frames -- --no-hero     # skip the hero video encode
+   npm run frames -- --lqip-only   # only regenerate the blurred placeholders in the manifest
    ```
 
    The script prints the size per clip and warns when a desktop set exceeds 12 MB. Lower that clip's `fps` or

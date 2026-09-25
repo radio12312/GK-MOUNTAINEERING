@@ -38,7 +38,10 @@ export function initPreloader(): { done: Promise<void> } {
   const strip = root.querySelector<HTMLElement>('[data-strip]')!;
   const status = root.querySelector<HTMLElement>('[data-status]')!;
 
-  const t0 = performance.now();
+  // Measure from navigation start, not script start: on slow networks the JS itself can take
+  // over a second to arrive, and the 2.5 s cap is about what the visitor experiences.
+  const t0 = 0;
+  let last = performance.now();
   let target = 0; // real progress, monotonic
   let shown = 0; // displayed progress
   let lastText = '';
@@ -62,7 +65,6 @@ export function initPreloader(): { done: Promise<void> } {
     strip.style.transform = `translate3d(0, ${(-(100 - shown * 100) * STEP).toFixed(1)}px, 0)`;
   };
 
-  let last = t0;
   const tick = (now: number) => {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
@@ -93,7 +95,7 @@ export function initPreloader(): { done: Promise<void> } {
     shown = 1;
     render();
     finish();
-  }, cfg.maxWaitMs);
+  }, Math.max(0, cfg.maxWaitMs - performance.now()));
 
   let finished = false;
   function finish() {

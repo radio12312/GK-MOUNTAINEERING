@@ -158,6 +158,7 @@ export function initAscent(): void {
       o.el.querySelectorAll<HTMLElement>('.ov__headline, .ov__closing').forEach((h) =>
         SplitText.create(h, {
           type: 'lines',
+          aria: 'none',
           linesClass: 'line',
           autoSplit: true,
           onSplit: () => {

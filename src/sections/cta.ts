@@ -199,6 +199,9 @@ export function initCta(): void {
 
   root.querySelector<HTMLButtonElement>('.book__reset')!.addEventListener('click', () => {
     form.reset();
+    // reset() fires no input event: shrink the message box back and drop its scroller state.
+    controls.message.style.height = '';
+    fitMessage();
     submitted = false;
     names.forEach((n) => {
       controls[n].setAttribute('aria-invalid', 'false');
