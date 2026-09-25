@@ -1,0 +1,46 @@
+{
+  "01-basecamp": {
+    "fps": 15,
+    "count": 116,
+    "width": 1600,
+    "height": 900,
+    "mobile": {
+      "width": 720,
+      "height": 1284
+    },
+    "lqip": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAAAwBwCdASogABIAPwFgm0eloqEYBgBbEAT2AE6ZqFFf4Z/oBuAFrV/QDDAPX/AgHjBs4hVnNwuteXRhKux19H6QEeAA/syXoXZy40fm1j30fLl7UZykKq+ykNjEhZvZfdqKhGeuvJlX2/0cCajA7gRl+DyzyBkEjuvkID47u9CrEyV/iM8gibS1/LepxcplAUu9jyAA"
+  },
+  "02-icefall": {
+    "fps": 15,
+    "count": 116,
+    "width": 1600,
+    "height": 900,
+    "mobile": {
+      "width": 720,
+      "height": 1284
+    },
+    "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAAAQBgCdASogABIAPwFmnkeloqEYBgBbEAT2AGKDgTZnLAP0AwwD1/wGz3HezGq+n9bXnyV5bFI6GAAA/lRpd2wXh6vKcBvSL29dUrubyUCvRn9lWRZY0n3nMPCbbHawJ7CjEgN4VNru14ohqZ+d/DlP+HKfhyn/DlPvPn/Rn+58/6GfEe7O44hlsAAAAA=="
+  },
+  "03-summit-push": {
+    "fps": 15,
+    "count": 116,
+    "width": 1600,
+    "height": 900,
+    "mobile": {
+      "width": 720,
+      "height": 1284
+    },
+    "lqip": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAABwBgCdASogABIAPw1uokemIyGYDAYAYxDE9i7AGzY2Z/oBuAFqA/QDDAP0A9/+7gAU+nRppZ41gznoiUAA/vAJO3fT1t/exyXAJ8QLzwccj+uGIeDONodWJM07Bz8f/sO/FBkibTU3DdIRNLhwbiJoX/StSJMSJzb8fXyzJDPtgE/Aro7bytEdD7jwWkeQZzGDiFOmoNAAAA=="
+  },
+  "04-summit": {
+    "fps": 15,
+    "count": 116,
+    "width": 1600,
+    "height": 900,
+    "mobile": {
+      "width": 720,
+      "height": 1284
+    },
+    "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAQBwCdASogABIAPw1yqEqmI6GYDAQAYxDE9gBWF7b2AfoBuAFrG/SDDAPX/APQqD92NUCIhLTBc39xtWytm8/tAAD+Iq9Rb19THItbSKmwfAW64DUB8oFQCiMXBxxAu4Lo6jxcPkm+xz6xh/svEnetEhKp1zSzIl8FSDe2aiTaX2dOme+oLOOyeHC2VY6aNcG9bAjPRDYI60RgAAA="
+  }
+}

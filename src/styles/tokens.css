@@ -1,0 +1,83 @@
+/* ------------------------------------------------------------------
+   Fallback faces, metric-matched to the web fonts so the swap
+   doesn't shift layout.
+   ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Barlow Condensed Fallback';
+  src: local('Arial Narrow'), local('ArialNarrow'), local('Roboto Condensed'), local('Helvetica Neue Condensed Bold'),
+    local('Arial');
+  size-adjust: 94%;
+  ascent-override: 106%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Consolas'), local('Menlo'), local('Courier New');
+  size-adjust: 101%;
+  ascent-override: 98%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* Palette */
+  --ink: #0b0f14;
+  --ink-2: #111821;
+  --ink-3: #18212c;
+  --glacier: #eef2f5;
+  --glacier-70: rgb(238 242 245 / 0.7);
+  --glacier-50: rgb(238 242 245 / 0.5);
+  --glacier-12: rgb(238 242 245 / 0.12);
+  --glacier-06: rgb(238 242 245 / 0.06);
+  --ice: #8fb8d0;
+  --rock: #3a4450;
+  --summit: #ff6a2b;
+  --summit-press: #e85a1e;
+
+  /* Type */
+  --font-display: 'Barlow Condensed', 'Barlow Condensed Fallback', 'Arial Narrow', sans-serif-condensed, sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, Consolas, monospace;
+
+  --track-display: 0.02em;
+  --track-label: 0.22em;
+
+  /* Fluid type scale */
+  --fs-mega: clamp(3.4rem, 1.2rem + 9vw, 11rem);
+  --fs-h1: clamp(2.8rem, 1.4rem + 5.6vw, 7rem);
+  --fs-h2: clamp(2.2rem, 1.2rem + 3.8vw, 5rem);
+  --fs-h3: clamp(1.4rem, 1.1rem + 1.1vw, 2.1rem);
+  --fs-lead: clamp(1.05rem, 0.95rem + 0.45vw, 1.35rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  /* Space */
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 4rem);
+  --section-pad: clamp(6rem, 4rem + 8vw, 12rem);
+  --maxw: 1440px;
+
+  /* Motion — slow, heavy, deliberate */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-power2: cubic-bezier(0.33, 1, 0.68, 1);
+  --dur-fast: 0.35s;
+  --dur: 0.8s;
+  --dur-slow: 1.4s;
+
+  --radius: 2px;
+  --focus: 0 0 0 2px var(--ink), 0 0 0 4px var(--summit);
+  --z-hud: 40;
+  --z-nav: 50;
+  --z-grain: 90;
+  --z-preloader: 100;
+}

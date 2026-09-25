@@ -1,0 +1,32 @@
+[
+  {
+    "file": "still-1.webp",
+    "clip": "01-basecamp",
+    "time": 2.57
+  },
+  {
+    "file": "still-2.webp",
+    "clip": "02-icefall",
+    "time": 0
+  },
+  {
+    "file": "still-3.webp",
+    "clip": "02-icefall",
+    "time": 5.13
+  },
+  {
+    "file": "still-4.webp",
+    "clip": "03-summit-push",
+    "time": 2.57
+  },
+  {
+    "file": "still-5.webp",
+    "clip": "04-summit",
+    "time": 0
+  },
+  {
+    "file": "still-6.webp",
+    "clip": "04-summit",
+    "time": 5.13
+  }
+]

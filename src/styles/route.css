@@ -1,0 +1,384 @@
+/* Route (3D) — owned by motion-engineer */
+
+.route {
+  position: relative;
+  background: var(--ink);
+  color: var(--glacier);
+}
+
+/* ------------------------------------------------------------------
+   Heading block
+   ------------------------------------------------------------------ */
+.route__intro {
+  padding-block: var(--section-pad) clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+}
+.route__eyebrow {
+  margin-bottom: 1.25rem;
+}
+.route__title {
+  font-size: var(--fs-h2);
+  max-width: 14ch;
+}
+.route__sub {
+  margin-top: 1.5rem;
+}
+
+/* ------------------------------------------------------------------
+   Scroll track + sticky stage (CSS sticky, no GSAP pin)
+   Height comes from --route-len (vh), set synchronously in initRoute().
+   ------------------------------------------------------------------ */
+.route__track {
+  position: relative;
+  height: calc(var(--route-len, 420) * 1vh);
+  height: calc(var(--route-len, 420) * 1lvh);
+}
+.route__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh; /* stays constant while mobile URL bars show/hide: no canvas re-allocs */
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ink);
+  pointer-events: none;
+}
+
+.route__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out);
+}
+.route__stage.is-ready .route__canvas {
+  opacity: 1;
+}
+.route--fallback .route__canvas {
+  display: none;
+}
+
+/* Soft fades into the ink page so the section edges never show a seam. */
+.route__stage::before,
+.route__stage::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.route__stage::before {
+  top: 0;
+  height: 24%;
+  background: linear-gradient(to bottom, var(--ink) 0%, rgb(11 15 20 / 0.72) 30%, rgb(11 15 20 / 0) 100%);
+}
+.route__stage::after {
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(to top, var(--ink) 0%, rgb(11 15 20 / 0.75) 32%, rgb(11 15 20 / 0) 100%);
+}
+
+/* ------------------------------------------------------------------
+   Camp labels (HTML, projected from 3D each frame via transforms)
+   ------------------------------------------------------------------ */
+.route__labels {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.route-label {
+  --lead: 60px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.route-label__dot,
+.route-label__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.route-label__dot {
+  width: 0;
+  height: 0;
+}
+.route-label__dot::before {
+  content: '';
+  position: absolute;
+  left: -4.5px;
+  top: -4.5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--summit);
+  box-shadow:
+    0 0 0 3px rgb(255 106 43 / 0.22),
+    0 0 16px rgb(255 106 43 / 0.65);
+  opacity: 0;
+  transform: scale(0.3);
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.9s var(--ease-out);
+}
+/* Leader line: from the dot up (or down) to the card. */
+.route-label__dot::after {
+  content: '';
+  position: absolute;
+  left: -0.5px;
+  bottom: 4px;
+  width: 1px;
+  height: calc(var(--lead) - 4px);
+  background: linear-gradient(to top, var(--summit), rgb(255 106 43 / 0.35));
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 0.9s var(--ease-out) 0.08s;
+}
+.route-label.is-below .route-label__dot::after {
+  bottom: auto;
+  top: 4px;
+  transform-origin: 50% 0;
+  background: linear-gradient(to bottom, var(--summit), rgb(255 106 43 / 0.35));
+}
+
+.route-label__card {
+  width: max-content;
+  max-width: min(15.5rem, calc(100vw - 2rem));
+}
+.route-label__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding: 0.6rem 0.8rem 0.65rem;
+  background: linear-gradient(135deg, rgb(11 15 20 / 0.74), rgb(11 15 20 / 0.52));
+  border-left: 1px solid var(--summit);
+  opacity: 0;
+  filter: blur(8px);
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 0.7s var(--ease-out) 0.12s,
+    filter 0.9s var(--ease-out) 0.12s,
+    transform 1s var(--ease-out) 0.12s;
+}
+/* Card on the left of its camp (the route heads right): mirror the accent edge. */
+.route-label.is-left .route-label__body {
+  align-items: flex-end;
+  text-align: right;
+  border-left: 0;
+  border-right: 1px solid var(--summit);
+}
+.route-label.is-below .route-label__body {
+  transform: translate3d(0, -10px, 0);
+}
+.route-label__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 0.9rem + 0.35vw, 1.25rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--glacier);
+}
+.route-label__meta {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ice);
+  white-space: nowrap;
+}
+.route-label__meta .mono {
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+  color: var(--glacier);
+}
+.route-label__sep {
+  margin-inline: 0.45em;
+  color: var(--summit);
+}
+.route-label__note {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--glacier-70);
+  max-width: 24ch;
+}
+
+.route-label.is-on .route-label__dot::before {
+  opacity: 1;
+  transform: scale(1);
+}
+.route-label.is-on .route-label__dot::after {
+  transform: scaleY(1);
+}
+.route-label.is-on .route-label__body {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* ------------------------------------------------------------------
+   HUD: day / altitude along the route
+   ------------------------------------------------------------------ */
+.route__hud {
+  position: absolute;
+  z-index: 3;
+  left: var(--gutter);
+  bottom: max(1.75rem, calc(100lvh - 100svh + 1.25rem));
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 2.25rem;
+  row-gap: 0.7rem;
+  min-width: 13rem;
+  opacity: 0;
+  transition: opacity 1s var(--ease-out);
+}
+.route__stage.is-ready .route__hud {
+  opacity: 1;
+}
+.route__hud-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.route__hud-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.route__hud-value {
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.3rem);
+  color: var(--glacier);
+}
+.route__hud-of {
+  color: var(--glacier-50);
+}
+.route__hud-bar {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--glacier-12);
+  overflow: hidden;
+}
+.route__hud-bar span {
+  display: block;
+  height: 100%;
+  background: var(--summit);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.route__note {
+  display: none;
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter);
+  bottom: max(1.75rem, calc(100lvh - 100svh + 1.25rem));
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  color: var(--glacier-50);
+}
+
+/* ------------------------------------------------------------------
+   Fallback: static still + SVG route
+   ------------------------------------------------------------------ */
+.route--fallback .route__note {
+  display: block;
+}
+.route--fallback .route__stage {
+  background: linear-gradient(180deg, #34475d 0%, #4d6b8a 30%, #a9b4bd 62%, #f2b58c 76%, #b9c3cc 88%, #b9c3cc 100%);
+}
+.route__static-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.route-static {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.route-static__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out);
+}
+.route-static.has-image .route-static__img {
+  opacity: 1;
+}
+.route-static.is-contained {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+.route-static__svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.route-static__mask {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.route-static__ghost {
+  fill: none;
+  stroke: rgb(238 242 245 / 0.28);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.route-static__path {
+  fill: none;
+  stroke: var(--summit);
+  stroke-width: 2.5;
+  stroke-dasharray: 7 5;
+  stroke-linejoin: round;
+}
+.route-static__head {
+  fill: var(--summit);
+  filter: drop-shadow(0 0 6px rgb(255 106 43 / 0.85));
+}
+.route--static .route-static__head {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   Small screens
+   ------------------------------------------------------------------ */
+@media (max-width: 600px) {
+  .route-label__body {
+    padding: 0.45rem 0.6rem 0.5rem;
+  }
+  .route-label__note {
+    font-size: 0.72rem;
+    max-width: 20ch;
+  }
+  .route__hud {
+    column-gap: 1.5rem;
+    min-width: 11rem;
+  }
+}
+@media (max-width: 420px) {
+  .route-label__note {
+    display: none; /* the camp list is still available to screen readers */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-label__dot::before,
+  .route-label__dot::after,
+  .route-label__body,
+  .route__canvas,
+  .route__hud,
+  .route-static__img {
+    transition: none;
+  }
+}

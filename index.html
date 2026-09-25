@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" class="is-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>G&amp;K Mountaineering — Guided high-altitude expeditions</title>
+    <meta
+      name="description"
+      content="Guided high-altitude expeditions to 6,000, 7,000 and 8,000 metres. Small teams, experienced guides, and turnaround times we keep."
+    />
+    <meta name="theme-color" content="#0B0F14" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Fonts: preconnect early; swap-in is hidden behind metric-matched fallbacks + fonts.ready reveal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300..600&family=JetBrains+Mono:wght@400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+
+    <!-- Critical media for the first screen -->
+    <link rel="preload" as="image" href="/video/hero-poster.webp" fetchpriority="high" />
+    <link rel="preload" as="fetch" href="/frames/manifest.json" crossorigin />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div id="preloader" class="preloader" role="status" aria-live="polite"></div>
+
+    <header id="nav" class="nav"></header>
+
+    <main id="main" tabindex="-1">
+      <section id="hero" class="hero" aria-labelledby="hero-title"></section>
+      <section id="ascent" class="ascent" aria-labelledby="ascent-title"></section>
+      <section id="route" class="route" aria-labelledby="route-title"></section>
+      <section id="expeditions" class="expeditions" aria-labelledby="expeditions-title"></section>
+      <section id="safety" class="safety" aria-labelledby="safety-title"></section>
+      <section id="gear" class="gear" aria-labelledby="gear-title"></section>
+      <section id="voices" class="voices" aria-labelledby="voices-title"></section>
+      <section id="book" class="book" aria-labelledby="book-title"></section>
+    </main>
+
+    <footer id="footer" class="footer"></footer>
+
+    <div class="grain" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <noscript>
+      <style>.preloader{display:none}</style>
+    </noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

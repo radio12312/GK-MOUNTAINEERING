@@ -1,0 +1,18 @@
+node_modules/
+dist/
+.vite/
+*.local
+.DS_Store
+Thumbs.db
+
+# local tooling / agent configuration — not part of the site
+.claude/
+.mcp.json
+graphify-out/
+BLUEPRINT.md
+API_CONTRACT.md
+design_tokens.json
+
+# deploy CLIs
+.vercel/
+.netlify/

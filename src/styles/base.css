@@ -1,0 +1,285 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--ink);
+  color-scheme: dark;
+  scrollbar-color: var(--rock) var(--ink);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--ink);
+  color: var(--glacier);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+img,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ul,
+ol {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+::selection {
+  background: var(--summit);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--summit);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 200;
+  padding: 0.75rem 1.1rem;
+  background: var(--glacier);
+  color: var(--ink);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* ------------------------------------------------------------------
+   Type primitives
+   ------------------------------------------------------------------ */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--track-display);
+  line-height: 0.92;
+  font-kerning: normal;
+}
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ice);
+  line-height: 1.2;
+}
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--glacier-70);
+  font-weight: 300;
+  max-width: 38ch;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Line reveal (SplitText adds .line wrappers; mask handles overflow) */
+[data-reveal] {
+  font-kerning: none; /* keeps split lines identical to unsplit text */
+}
+html.is-loading [data-reveal],
+html.is-loading [data-fade] {
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------ */
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--glacier);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.7em 1.4em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--glacier-50);
+  border-radius: var(--radius);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.btn:hover {
+  border-color: var(--glacier);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn--summit {
+  --btn-bg: var(--summit);
+  --btn-fg: #140802;
+  border-color: var(--summit);
+}
+.btn--summit:hover {
+  --btn-bg: #ff7c42;
+  border-color: #ff7c42;
+}
+.btn--summit:active {
+  --btn-bg: var(--summit-press);
+}
+
+/* ------------------------------------------------------------------
+   Layout helpers
+   ------------------------------------------------------------------ */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Topographic contour texture behind non-video sections */
+.topo {
+  position: relative;
+  isolation: isolate;
+}
+.topo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/topo.svg');
+  background-size: 1400px auto;
+  background-position: center top;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+   Global film layers
+   ------------------------------------------------------------------ */
+.grain {
+  /* Pre-generated 160px noise tile (public/grain.png): cheap to rasterize, unlike an SVG
+     feTurbulence filter, whose re-raster after GPU tile eviction caused 100 ms+ stalls. */
+  position: fixed;
+  inset: -120px;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url('/grain.png');
+  background-size: 160px 160px;
+  animation: grain 0.9s steps(6) infinite;
+  will-change: transform;
+}
+@keyframes grain {
+  0% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(-53px, 37px, 0); }
+  33% { transform: translate3d(41px, -79px, 0); }
+  50% { transform: translate3d(-97px, 23px, 0); }
+  67% { transform: translate3d(83px, 61px, 0); }
+  83% { transform: translate3d(-29px, -47px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-grain) - 1);
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 45%, transparent 55%, rgb(5 8 12 / 0.55) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
